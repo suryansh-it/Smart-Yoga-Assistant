@@ -1,0 +1,1 @@
+# Video capture setup with OpenCV for live input
