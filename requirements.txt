@@ -1,0 +1,13 @@
+Flask
+Flask-WTF
+Flask-SQLAlchemy
+Flask-Migrate
+psycopg2-binary
+opencv-python
+mediapipe
+tensorflow
+tensorflow-hub
+numpy
+pandas
+scikit-learn
+matplotlib
