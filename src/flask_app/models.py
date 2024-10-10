@@ -10,9 +10,10 @@ class User(db.Model):
 
 class Pose(db.Model):
     __tablename__ = 'Pose_Table'
-    id = db.Column(db.Integer, primary_key = True)
-    name=   db.Column(db.String(80) , nullable = False)
-    is_correct = db.Column(db.Boolean, default=False)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('User_Table.id'), nullable=False)
+    pose_data = db.Column(db.Text, nullable=False)
+    feedback = db.Column(db.Text, nullable=True)
 
 class Feedback(db.Model):
     __tablename__ = 'Feedback_Table'
