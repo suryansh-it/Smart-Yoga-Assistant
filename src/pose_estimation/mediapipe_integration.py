@@ -19,8 +19,14 @@ def get_mediapipe_keypoints(image):
     :return: A dictionary with body, hands, and face keypoints.
     """
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    # Pose landmarks
     results_pose = pose.process(image_rgb)
+    
+    # Hands landmarks
     results_hands = hands.process(image_rgb)
+    
+    # Face mesh landmarks
     results_face = face_mesh.process(image_rgb)
 
     keypoints = {
