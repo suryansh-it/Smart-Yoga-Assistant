@@ -1,7 +1,8 @@
 # Code for loading and using Yoga pose classification model
 
 import numpy as np
-from tensorflow.keras.models import load_model
+from tensorflow import load_model
+
 
 class YogaPoseClassifier:
     def __init__(self, model_path):
