@@ -1,7 +1,7 @@
 # Video capture setup with OpenCV for live input
 
 import cv2
-from src.live_feedback.real_time_pose_eval import evaluate_pose
+from .real_time_pose_eval import evaluate_pose
 
 def capture_video(use_posenet=True):
     """
