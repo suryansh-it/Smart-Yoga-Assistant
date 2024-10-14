@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, Response, jsonify, request
 from flask_login import login_required
-from ..live_feedback.video_capture import capture_video
+from ..live_feedback.video_capture import start_video_capture, stop_video_capture
 import logging
 
 main = Blueprint('main', __name__)
@@ -22,20 +22,18 @@ def feedback_page():
 def video_feed():
     try:
         logging.info("Attempting to start video feed.")
-        video_gen = capture_video(use_posenet=True)  # Check if this is a callable
-        return Response(video_gen, mimetype='multipart/x-mixed-replace; boundary=frame')
+        return Response(start_video_capture(use_posenet=True),
+                        mimetype='multipart/x-mixed-replace; boundary=frame')
     except Exception as e:
         logging.error("Error in video feed: %s", str(e))
         return jsonify({"error": "Video feed failed"}), 500
-
 
 @main.route('/start', methods=['POST'])
 @login_required
 def start_feedback():
     logging.info("Starting feedback session.")
     try:
-        # Initialize the video capture and feedback mechanism
-        capture_video(use_posenet=True)
+        start_video_capture(use_posenet=True)  # Start the video capturing process
         return jsonify({"message": "Yoga feedback session started."}), 200
     except Exception as e:
         logging.error("Error during feedback session: %s", str(e))
@@ -45,6 +43,7 @@ def start_feedback():
 @login_required
 def end_feedback():
     logging.info("Ending feedback session.")
+    stop_video_capture()  # Stop the video capturing process
     return jsonify({"message": "Yoga feedback session ended."}), 200
 
 @main.route('/feedback', methods=['GET'])
