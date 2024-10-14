@@ -1,51 +1,43 @@
 # Video capture setup with OpenCV for live input
 
-import cv2
-from .real_time_pose_eval import evaluate_pose
-
-is_session_active = False
-def capture_video(use_posenet=True):
-    """
+"""
     Capture live video from the webcam and perform real-time pose evaluation.
     
     :param use_posenet: Boolean flag to choose between PoseNet and Mediapipe.
     """
+import cv2
+from .real_time_pose_eval import evaluate_pose
 
-    global is_session_active
+is_session_active = False
+cap = None  # Declare capture variable globally
+
+def start_video_capture(use_posenet=True):
+    global is_session_active, cap
     is_session_active = True
-
-    cap = cv2.VideoCapture(0)  # Capture video from the webcam
+    cap = cv2.VideoCapture(0)
 
     if not cap.isOpened():
         print("Error: Cannot access the webcam.")
+        is_session_active = False
         return
-    
-    while cap.isOpened():
+
+    while is_session_active:
         ret, frame = cap.read()
-        
         if not ret:
             break
 
         # Resize the frame for display
         resized_frame = cv2.resize(frame, (640, 480))
-        
+
         # Perform pose evaluation and get feedback
         feedback = evaluate_pose(resized_frame, use_posenet=use_posenet)
-        
-        # Display the feedback on the frame
-        cv2.putText(resized_frame, feedback, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-        
-        # Show the frame with feedback
-        cv2.imshow('Yoga Pose Evaluation', resized_frame)
-        
-        # Press 'q' to exit
-        if cv2.waitKey(10) & 0xFF == ord('q'):
-            break
 
+        # Yield frame with feedback
+        _, jpeg = cv2.imencode('.jpg', resized_frame)
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
 
-    # Release the video capture object
     cap.release()
-    cv2.destroyAllWindows()
 
 def stop_video_capture():
     global is_session_active

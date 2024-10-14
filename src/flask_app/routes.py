@@ -1,64 +1,55 @@
-# Contains the Flask routes (API endpoints)
-
-
-# routes.py
-from flask import Blueprint, render_template, request , jsonify , Response
+from flask import Blueprint, render_template, Response, jsonify, request
 from flask_login import login_required
 from ..live_feedback.video_capture import capture_video
 import logging
-import cv2
 
 main = Blueprint('main', __name__)
 
-cap = cv2.VideoCapture(0)
-feedback = "Waiting for feedback..."    
+# Set up logging
+logging.basicConfig(level=logging.INFO)
 
 @main.route('/')
 def index():
-    """Render the index page with the button."""
     return render_template('index.html')
 
 @main.route('/feedback')
 @login_required
 def feedback_page():
-    """Render the feedback page."""
     return render_template('feedback.html')
-
-# def generate_frames():
-#     global feedback
-#     while True:
-#         success, frame = cap.read()
-#         if not success:
-#             break
-#         else:
-#             feedback = evaluate_pose(frame)
-#             cv2.putText(frame, feedback, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-#             ret, buffer = cv2.imencode('.jpg', frame)
-#             frame = buffer.tobytes()
-#             yield (b'--frame\r\n'
-#                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 @main.route('/video_feed')
 @login_required
 def video_feed():
-    """Route to provide video streaming."""
-    return Response(capture_video(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    try:
+        logging.info("Attempting to start video feed.")
+        video_gen = capture_video(use_posenet=True)  # Check if this is a callable
+        return Response(video_gen, mimetype='multipart/x-mixed-replace; boundary=frame')
+    except Exception as e:
+        logging.error("Error in video feed: %s", str(e))
+        return jsonify({"error": "Video feed failed"}), 500
 
-@main.route('/feedback')
-@login_required
-def get_feedback():
-    """Return the latest textual feedback."""
-    return jsonify({"feedback": feedback})
 
 @main.route('/start', methods=['POST'])
 @login_required
 def start_feedback():
-    """Start the feedback session."""
-    return jsonify({"message": "Yoga feedback session started"}), 200
+    logging.info("Starting feedback session.")
+    try:
+        # Initialize the video capture and feedback mechanism
+        capture_video(use_posenet=True)
+        return jsonify({"message": "Yoga feedback session started."}), 200
+    except Exception as e:
+        logging.error("Error during feedback session: %s", str(e))
+        return jsonify({"error": "Failed to start feedback session."}), 500
 
 @main.route('/end', methods=['POST'])
 @login_required
 def end_feedback():
-    """End the feedback session and release the webcam."""
-    cap.release()
-    return "Yoga feedback session ended"
+    logging.info("Ending feedback session.")
+    return jsonify({"message": "Yoga feedback session ended."}), 200
+
+@main.route('/feedback', methods=['GET'])
+@login_required
+def get_feedback():
+    # Placeholder for real-time feedback (Modify this as needed for actual feedback implementation)
+    feedback = "Posture is correct!"  # This is a placeholder. You can modify this to get live feedback
+    return jsonify({"feedback": feedback})
