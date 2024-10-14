@@ -2,6 +2,7 @@ $(document).ready(function() {
     const video = document.getElementById('video');
     const feedback = document.getElementById('feedback');
     const startButton = document.getElementById('start-button');
+    const endButton = document.getElementById('end-button');
 
     // Function to start feedback session
     async function startFeedbackSession() {
@@ -18,9 +19,41 @@ $(document).ready(function() {
         }
     }
 
+    // Function to end feedback session
+    async function endFeedbackSession() {
+        feedback.innerHTML = "Ending yoga feedback session...";
+        
+        try {
+            const response = await fetch('/end', {
+                method: 'POST',
+            });
+            const data = await response.json();
+            feedback.innerHTML = data.message || "Feedback session ended.";
+        } catch (error) {
+            feedback.innerHTML = "Error ending feedback session: " + error;
+        }
+    }
+
+    // Function to start the video feed
+    async function startVideo() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+            video.play();
+        } catch (error) {
+            console.error("Error accessing the camera: ", error);
+        }
+    }
+
     // Start capturing video on button click
     startButton.addEventListener('click', () => {
         startFeedbackSession();
         startVideo();  // Start the video feed
+    });
+
+    // End feedback session on button click
+    endButton.addEventListener('click', () => {
+        endFeedbackSession();
+        video.srcObject.getTracks().forEach(track => track.stop()); // Stop video feed
     });
 });
