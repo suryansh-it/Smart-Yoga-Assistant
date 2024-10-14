@@ -13,11 +13,11 @@ main = Blueprint('main', __name__)
 def index():
     return render_template('index.html')
 
+feedback_list = []  # This will store feedback messages
 @main.route('/feedback')
 @login_required
 def feedback():
     return render_template('feedback.html')
-
 
 
 # Set up logging

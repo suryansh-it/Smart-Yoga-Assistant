@@ -3,12 +3,17 @@
 import cv2
 from .real_time_pose_eval import evaluate_pose
 
+is_session_active = False
 def capture_video(use_posenet=True):
     """
     Capture live video from the webcam and perform real-time pose evaluation.
     
     :param use_posenet: Boolean flag to choose between PoseNet and Mediapipe.
     """
+
+    global is_session_active
+    is_session_active = True
+
     cap = cv2.VideoCapture(0)  # Capture video from the webcam
 
     if not cap.isOpened():
@@ -41,3 +46,7 @@ def capture_video(use_posenet=True):
     # Release the video capture object
     cap.release()
     cv2.destroyAllWindows()
+
+def stop_video_capture():
+    global is_session_active
+    is_session_active = False
