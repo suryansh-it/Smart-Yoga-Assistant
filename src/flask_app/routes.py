@@ -3,7 +3,7 @@
 # routes.py
 from flask import Blueprint, render_template, request
 from flask_login import login_required
-from live_feedback.video_capture import capture_video
+from ..live_feedback.video_capture import capture_video
 
 main = Blueprint('main', __name__)
 

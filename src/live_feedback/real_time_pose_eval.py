@@ -3,9 +3,9 @@
 # This script handles real-time evaluation of yoga poses, allowing fallback
 # between PoseNet and Mediapipe for keypoint extraction
 
-from pose_estimation.posenet_integration import get_posenet_keypoints
-from pose_estimation.mediapipe_integration import get_mediapipe_keypoints
-from live_feedback.feedback_utils import give_feedback
+from src.pose_estimation.posenet_integration import get_posenet_keypoints
+from src.pose_estimation.mediapipe_integration import get_mediapipe_keypoints
+from src.live_feedback.feedback_utils import give_feedback
 
 def evaluate_pose(image, use_posenet=True):
     """
