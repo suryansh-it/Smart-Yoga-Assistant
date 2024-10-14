@@ -27,14 +27,15 @@ def feedback_page():
 def video_feed():
     global cap
     try:
-        if cap is None or not cap.isOpened():
-            logging.error("Camera is not initialized or already closed.")
+        if cap is None or not cap.isOpened() or not is_session_active:
+            logging.error("Camera is not initialized or session is not active.")
             return jsonify({"error": "Camera is not accessible."}), 500
-        return Response(capture_video(),
+        return Response(capture_video(use_posenet=True),
                         mimetype='multipart/x-mixed-replace; boundary=frame')
     except Exception as e:
         logging.exception("Error in video feed: %s", str(e))  # Log the exception with traceback
         return jsonify({"error": "Video feed failed."}), 500
+
 
 
 @main.route('/start', methods=['POST'])
@@ -50,7 +51,7 @@ def start_feedback():
             logging.error("Cannot access the webcam.")
             return jsonify({"error": "Failed to access the webcam."}), 500
 
-        is_session_active = True  # Set the session active
+        is_session_active = True  # Set the session active after successful camera access
         logging.info("Feedback session started successfully.")
         return jsonify({"message": "Yoga feedback session started."}), 200
     except Exception as e:
@@ -69,6 +70,7 @@ def end_feedback():
         cap = None  # Reset the cap variable
         logging.info("Camera released successfully.")
     return jsonify({"message": "Yoga feedback session ended."}), 200
+
 
 
 @main.route('/feedback', methods=['GET'])

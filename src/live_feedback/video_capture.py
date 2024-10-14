@@ -1,3 +1,4 @@
+import cv2
 from .real_time_pose_eval import evaluate_pose
 
 def capture_video(use_posenet=True):

@@ -4,6 +4,7 @@ $(document).ready(function () {
         $.post('/start', function (data) {
             $('#feedbackArea').append('<div class="alert alert-info">Session started: ' + data.message + '</div>');
             $('#video-feed').show(); // Show the video feed
+            startVideoStream(); // Start the video stream after starting feedback
             startFeedbackPolling(); // Start polling for feedback
         }).fail(function (jqXHR) {
             $('#feedbackArea').append('<div class="alert alert-danger">Error: ' + jqXHR.responseJSON.error + '</div>');
@@ -20,6 +21,11 @@ $(document).ready(function () {
             $('#feedbackArea').append('<div class="alert alert-danger">Error ending session.</div>');
         });
     });
+
+    // Function to start the video stream
+    function startVideoStream() {
+        $('#video').attr('src', '/video_feed'); // Set the video source to /video_feed
+    }
 
     // Poll the server for real-time textual feedback
     let feedbackInterval;
