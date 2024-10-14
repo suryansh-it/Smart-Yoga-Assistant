@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 # Declare capture variable globally
 cap = None  # Declare capture variable globally
+
 is_session_active = False
 
 @main.route('/')
@@ -30,7 +31,7 @@ def video_feed():
         if cap is None or not cap.isOpened() or not is_session_active:
             logging.error("Camera is not initialized or session is not active.")
             return jsonify({"error": "Camera is not accessible."}), 500
-        return Response(capture_video(use_posenet=True),
+        return Response(capture_video(cap, is_session_active, use_posenet=True),
                         mimetype='multipart/x-mixed-replace; boundary=frame')
     except Exception as e:
         logging.exception("Error in video feed: %s", str(e))  # Log the exception with traceback
