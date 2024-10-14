@@ -1,37 +1,12 @@
-// $(document).ready(function() {
-//     // Start feedback session
-//     $('#startFeedback').click(function() {
-//         $.post('/start', function(data) {
-//             $('#feedbackArea').append('<div class="alert alert-info">Session started: ' + data.message + '</div>');
-//         }).fail(function() {
-//             $('#feedbackArea').append('<div class="alert alert-danger">Error starting session.</div>');
-//         });
-//     });
-
-//     // End feedback session
-//     $('#endFeedback').click(function() {
-//         $.post('/end', function(data) {
-//             $('#feedbackArea').append('<div class="alert alert-info">Session ended: ' + data.message + '</div>');
-//         });
-//     });
-
-//     // Poll the server for real-time textual feedback
-//     setInterval(function() {
-//         $.get('/feedback', function(data) {
-//             $('#liveFeedbackText').text(data.feedback);
-//         });
-//     }, 1000);  // Adjust the polling interval as necessary
-// });
-
-
 $(document).ready(function () {
     // Start feedback session
     $('#startFeedback').click(function () {
         $.post('/start', function (data) {
             $('#feedbackArea').append('<div class="alert alert-info">Session started: ' + data.message + '</div>');
+            $('#video-feed').show(); // Show the video feed
             startFeedbackPolling(); // Start polling for feedback
-        }).fail(function () {
-            $('#feedbackArea').append('<div class="alert alert-danger">Error starting session.</div>');
+        }).fail(function (jqXHR) {
+            $('#feedbackArea').append('<div class="alert alert-danger">Error: ' + jqXHR.responseJSON.error + '</div>');
         });
     });
 
@@ -39,6 +14,7 @@ $(document).ready(function () {
     $('#endFeedback').click(function () {
         $.post('/end', function (data) {
             $('#feedbackArea').append('<div class="alert alert-info">Session ended: ' + data.message + '</div>');
+            $('#video-feed').hide(); // Hide the video feed
             stopFeedbackPolling(); // Stop polling for feedback
         }).fail(function () {
             $('#feedbackArea').append('<div class="alert alert-danger">Error ending session.</div>');
@@ -62,4 +38,12 @@ $(document).ready(function () {
         clearInterval(feedbackInterval);
         $('#liveFeedbackText').text("Feedback polling stopped.");
     }
+
+    // Stop video capture on page unload
+    $(window).on('beforeunload', function () {
+        $.post('/end');  // Stop video capture on page unload
+    });
+
+    // Initially hide the video feed
+    $('#video-feed').hide();
 });

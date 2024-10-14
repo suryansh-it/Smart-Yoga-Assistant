@@ -10,7 +10,8 @@
     <h1>Yoga Pose Evaluation</h1>
     <div class="video-container">
         <!-- Video feed -->
-        <img src="{{ url_for('main.video_feed') }}" id="videoElement" width="640" height="480">
+        <img src="{{ url_for('main.video_feed') }}" id="video-feed" alt="Video Feed" width="640" height="480"
+            style="border: 1px solid #ccc;">
     </div>
     <div id="feedbackArea" class="feedback-container">
         <h3>Live Feedback:</h3>
@@ -19,6 +20,7 @@
     <button id="startFeedback" class="btn btn-primary">Start Feedback</button>
     <button id="endFeedback" class="btn btn-danger">End Feedback</button>
 </div>
+
 
 {% block script %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
