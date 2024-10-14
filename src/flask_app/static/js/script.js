@@ -4,6 +4,12 @@ $(document).ready(function() {
     const startButton = document.getElementById('start-button');
     const endButton = document.getElementById('end-button');
 
+    // Check if elements are found
+    if (!startButton || !endButton) {
+        console.error("Start or End button not found in the DOM.");
+        return; // Exit if buttons are not found
+    }
+
     // Function to start feedback session
     async function startFeedbackSession() {
         feedback.innerHTML = "Starting yoga feedback session...";
@@ -54,6 +60,8 @@ $(document).ready(function() {
     // End feedback session on button click
     endButton.addEventListener('click', () => {
         endFeedbackSession();
-        video.srcObject.getTracks().forEach(track => track.stop()); // Stop video feed
+        if (video.srcObject) {
+            video.srcObject.getTracks().forEach(track => track.stop()); // Stop video feed
+        }
     });
 });
