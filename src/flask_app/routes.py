@@ -11,6 +11,7 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
+    """Render the index page with the button."""
     return render_template('index.html')
 
 feedback_list = []  # This will store feedback messages
