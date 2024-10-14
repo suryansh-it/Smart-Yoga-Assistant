@@ -1,6 +1,6 @@
 $(document).ready(function() {
     $('#startFeedback').click(function() {
-        $.post('/start', function(data) {
+        $.post('/home/start', function(data) {
             $('#feedbackArea').append('<div class="alert alert-info">Session started: ' + data.message + '</div>');
         }).fail(function() {
             $('#feedbackArea').append('<div class="alert alert-danger">Error starting session.</div>');
@@ -21,7 +21,7 @@ function updateFeedback(feedback) {
 
 // Function to poll for feedback
 setInterval(function() {
-    $.get('/feedback', function(data) {
+    $.get('/home/feedback', function(data) {
         if (data.feedback) {
             updateFeedback(data.feedback);
         }

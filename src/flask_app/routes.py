@@ -14,16 +14,16 @@ def index():
     return render_template('index.html')
 
 feedback_list = []  # This will store feedback messages
-@main.route('/feedback')
+@main.route('/home/feedback')
 @login_required
 def feedback():
-    return render_template('feedback.html')
+    return jsonify({"feedback": feedback_list[-1] if feedback_list else "No feedback available."})
 
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 
-@main.route('/start', methods=['POST'])
+@main.route('/home/start', methods=['POST'])
 def start_feedback():
     logging.info("Start feedback session called.")
     try:

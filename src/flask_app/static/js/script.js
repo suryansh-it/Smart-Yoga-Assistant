@@ -15,7 +15,7 @@ $(document).ready(function() {
         feedback.innerHTML = "Starting yoga feedback session...";
         
         try {
-            const response = await fetch('/start', {
+            const response = await fetch('/home/start', {
                 method: 'POST',
             });
             const data = await response.json();
