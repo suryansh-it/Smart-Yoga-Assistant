@@ -1,7 +1,8 @@
 # Contains the Flask routes (API endpoints)
 
+
 # routes.py
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request , jsonify
 from flask_login import login_required
 from ..live_feedback.video_capture import capture_video
 
@@ -19,6 +20,9 @@ def feedback():
 @main.route('/start', methods=['POST'])
 
 def start_feedback():
-    capture_video(use_posenet=True)
-    return "Yoga feedback session ended"
+    try:
+        capture_video(use_posenet=True)
+        return jsonify({"message": "Yoga feedback session started"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
