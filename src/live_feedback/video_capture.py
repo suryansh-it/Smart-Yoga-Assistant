@@ -42,3 +42,11 @@ def start_video_capture(use_posenet=True):
 def stop_video_capture():
     global is_session_active
     is_session_active = False
+
+
+# Video Capture as a Generator: The start_video_capture function now acts as a generator, 
+# yielding video frames continuously until the session is marked as inactive.
+
+# Global Variables: The global variable cap is used to maintain the state of the video capture
+# , which can be accessed by both start_video_capture and stop_video_capture functions.
+
