@@ -1,0 +1,13 @@
+body {
+  background-color: #f8f9fa;
+}
+
+#video {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+#feedback {
+  min-height: 300px;
+}
