@@ -5,6 +5,7 @@
 from flask import Blueprint, render_template, request , jsonify
 from flask_login import login_required
 from ..live_feedback.video_capture import capture_video
+import logging
 
 main = Blueprint('main', __name__)
 
@@ -17,16 +18,21 @@ def index():
 def feedback():
     return render_template('feedback.html')
 
-@main.route('/start', methods=['POST'])
 
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+
+@main.route('/start', methods=['POST'])
 def start_feedback():
-    # global is_session_active
-    # is_session_active = True
+    logging.info("Start feedback session called.")
     try:
         capture_video(use_posenet=True)
         return jsonify({"message": "Yoga feedback session started"}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        logging.error("Error during feedback session: %s", str(e))
+        return jsonify({"error": "Failed to start feedback session"}), 500
+
 
 
 @main.route('/end', methods=['POST'])
