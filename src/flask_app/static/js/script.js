@@ -4,6 +4,18 @@ $(document).ready(function() {
     const startButton = document.getElementById('start-button');
     const endButton = document.getElementById('end-button');
 
+
+
+// Start video stream
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function (stream) {
+        video.srcObject = stream;
+    })
+    .catch(function (err) {
+        console.log("Error accessing webcam: " + err);
+    });
+
+
     // Check if elements are found
     if (!startButton || !endButton) {
         console.error("Start or End button not found in the DOM.");

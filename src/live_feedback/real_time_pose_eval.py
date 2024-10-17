@@ -21,8 +21,19 @@ def evaluate_pose(image, use_posenet=True):
     else:
         keypoints = get_mediapipe_keypoints(image)
 
-    if keypoints:
+    # if keypoints:
+    #     # Process keypoints and give feedback
+    #     feedback = give_feedback(keypoints)
+    #     return feedback
+    # return "No keypoints detected."
+
+    keypoints = get_posenet_keypoints(image)  # Assuming this returns a NumPy array or tensor
+    if keypoints.any():  # Check if any keypoints exist
+        # Proceed with pose evaluation logic
         # Process keypoints and give feedback
         feedback = give_feedback(keypoints)
-        return feedback
-    return "No keypoints detected."
+        
+    else:
+        # Handle the case where no keypoints are detected
+        feedback= "No keypoints detected."
+    return feedback
