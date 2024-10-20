@@ -1,4 +1,0 @@
-# Pre-trained MoveNet lightning model (loaded from TensorFlow Hub)
-
-#Placeholder for a local version of the MoveNet Lightning model if  downloaded. 
-#If loading it dynamically from TensorFlow Hub, don’t need this file.

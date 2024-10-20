@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow_hub as hub
 
 # Load the PoseNet model from TensorFlow Hub (pretrained)
-model = hub.load("https://tfhub.dev/google/movenet/singlepose/lightning/4")
+model = hub.KerasLayer("https://tfhub.dev/google/movenet/singlepose/lightning/4")
 movenet = model.signatures['serving_default']  # Get the callable model function
 
 def get_posenet_keypoints(image):
