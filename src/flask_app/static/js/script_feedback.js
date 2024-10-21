@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // Start feedback session
-    $('#start-button').click(function () {  // Corrected button ID
+    $('#start-button').click(function () {
         $.post('/start', function (data) {
             $('#feedbackArea').append('<div class="alert alert-info">Session started: ' + data.message + '</div>');
             $('#video-feed').show(); // Show the video feed
@@ -12,7 +12,7 @@ $(document).ready(function () {
     });
 
     // End feedback session
-    $('#end-button').click(function () {  // Corrected button ID
+    $('#end-button').click(function () {
         $.post('/end', function (data) {
             $('#feedbackArea').append('<div class="alert alert-info">Session ended: ' + data.message + '</div>');
             $('#video-feed').hide(); // Hide the video feed
@@ -22,7 +22,6 @@ $(document).ready(function () {
         });
     });
 
-    // Function to start the video stream
     function startVideoStream() {
         $('#video').attr('src', '/video_feed'); // Set the video source to /video_feed
     }

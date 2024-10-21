@@ -10,8 +10,7 @@ main = Blueprint('main', __name__)
 logging.basicConfig(level=logging.DEBUG)
 
 # Declare capture variable globally
-cap = None  # Declare capture variable globally
-
+cap = None
 is_session_active = False
 
 @main.route('/')
@@ -34,10 +33,8 @@ def video_feed():
         return Response(capture_video(cap, is_session_active, use_posenet=True),
                         mimetype='multipart/x-mixed-replace; boundary=frame')
     except Exception as e:
-        logging.exception("Error in video feed: %s", str(e))  # Log the exception with traceback
+        logging.exception("Error in video feed: %s", str(e))
         return jsonify({"error": "Video feed failed."}), 500
-
-
 
 @main.route('/start', methods=['POST'])
 @login_required
@@ -56,9 +53,8 @@ def start_feedback():
         logging.info("Feedback session started successfully.")
         return jsonify({"message": "Yoga feedback session started."}), 200
     except Exception as e:
-        logging.exception("Error during feedback session: %s", str(e))  # Log exception details
+        logging.exception("Error during feedback session: %s", str(e))
         return jsonify({"error": "Failed to start feedback session."}), 500
-
 
 @main.route('/end', methods=['POST'])
 @login_required
@@ -72,11 +68,8 @@ def end_feedback():
         logging.info("Camera released successfully.")
     return jsonify({"message": "Yoga feedback session ended."}), 200
 
-
-
 @main.route('/feedback', methods=['GET'])
 @login_required
 def get_feedback():
     feedback = "Posture is correct!"  # Placeholder feedback
     return jsonify({"feedback": feedback})
-

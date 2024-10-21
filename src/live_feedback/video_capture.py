@@ -7,14 +7,14 @@ def capture_video(cap, is_session_active, use_posenet=True):
         return  # Don't proceed if the session is not active
 
     if cap is None or not cap.isOpened():
-        print("Error: Camera is not initialized.")
+        print("Error: Camera is not initialized or cannot be opened.")
         return
 
     while cap.isOpened() and is_session_active:
         ret, frame = cap.read()
 
         if not ret:
-            print("Error: Frame not received.")
+            print("Error: Frame not received from the camera.")
             break
 
         # Resize the frame for display
@@ -27,11 +27,19 @@ def capture_video(cap, is_session_active, use_posenet=True):
         cv2.putText(resized_frame, feedback, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # Encode the frame as JPEG
-        _, buffer = cv2.imencode('.jpg', resized_frame)
-        frame = buffer.tobytes()
+        success, buffer = cv2.imencode('.jpg', resized_frame)
+        if not success:
+            print("Error: Frame encoding failed.")
+            break
+
+        # Convert the buffer to bytes
+        frame_bytes = buffer.tobytes()
 
         # Yield the frame in the required format for streaming
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
-    cap.release()  # Ensure the camera is released when done
+    # Ensure the camera is released when done
+    if cap is not None:
+        cap.release()
+        print("Camera released successfully.")
