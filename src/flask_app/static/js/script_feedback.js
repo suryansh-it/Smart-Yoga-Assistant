@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // Start feedback session
-    $('#startFeedback').click(function () {
+    $('#start-button').click(function () {  // Corrected button ID
         $.post('/start', function (data) {
             $('#feedbackArea').append('<div class="alert alert-info">Session started: ' + data.message + '</div>');
             $('#video-feed').show(); // Show the video feed
@@ -12,7 +12,7 @@ $(document).ready(function () {
     });
 
     // End feedback session
-    $('#endFeedback').click(function () {
+    $('#end-button').click(function () {  // Corrected button ID
         $.post('/end', function (data) {
             $('#feedbackArea').append('<div class="alert alert-info">Session ended: ' + data.message + '</div>');
             $('#video-feed').hide(); // Hide the video feed
