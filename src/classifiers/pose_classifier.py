@@ -72,7 +72,7 @@ class YogaPoseClassifier:
         :param model_path: Path to the pre-trained yoga pose classification model.
         """
         # Load the TensorFlow saved model
-        self.model = tf.saved_model.load(model_path)
+        self.model =  tf.compat.v2.saved_model.load(model_path)
         # Extract the serving signature to make predictions
         self.predict_fn = self.model.signatures["serving_default"]
 
@@ -114,8 +114,8 @@ class YogaPoseClassifier:
         prediction = self.predict_fn(input_tensor)
 
         # Extract class and confidence from the prediction result
-        predicted_class = np.argmax(prediction["identity"].numpy())  # Replace "dense" with actual output layer name
-        confidence_score = np.max(prediction["identity"].numpy())  # Replace "dense" with actual output layer name
+        predicted_class = np.argmax(prediction['Identity:0'].numpy())  # Replace "dense" with actual output layer name
+        confidence_score = np.max(prediction['Identity:0'].numpy())  # Replace "dense" with actual output layer name
         
         return predicted_class, confidence_score
 
