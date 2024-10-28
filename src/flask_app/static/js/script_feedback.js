@@ -1,32 +1,24 @@
 $(document).ready(function () {
-    // Start feedback session
     $('#start-button').click(function () {
         $.post('/start', function (data) {
             $('#feedbackArea').append('<div class="alert alert-info">Session started: ' + data.message + '</div>');
-            $('#video-feed').show(); // Show the video feed
-            startVideoStream(); // Start the video stream after starting feedback
-            startFeedbackPolling(); // Start polling for feedback
+            $('#video').attr('src', '/video_feed'); // Set the img src to video feed
+            startFeedbackPolling(); // Start feedback polling
         }).fail(function (jqXHR) {
             $('#feedbackArea').append('<div class="alert alert-danger">Error: ' + jqXHR.responseJSON.error + '</div>');
         });
     });
 
-    // End feedback session
     $('#end-button').click(function () {
         $.post('/end', function (data) {
             $('#feedbackArea').append('<div class="alert alert-info">Session ended: ' + data.message + '</div>');
-            $('#video-feed').hide(); // Hide the video feed
-            stopFeedbackPolling(); // Stop polling for feedback
+            $('#video').attr('src', ''); // Clear the image source to stop stream
+            stopFeedbackPolling(); // Stop polling
         }).fail(function () {
             $('#feedbackArea').append('<div class="alert alert-danger">Error ending session.</div>');
         });
     });
 
-    function startVideoStream() {
-        $('#video').attr('src', '/video_feed'); // Set the video source to /video_feed
-    }
-
-    // Poll the server for real-time textual feedback
     let feedbackInterval;
 
     function startFeedbackPolling() {
@@ -36,7 +28,7 @@ $(document).ready(function () {
             }).fail(function () {
                 $('#liveFeedbackText').text("Error retrieving feedback.");
             });
-        }, 1000); // Poll every second
+        }, 1000);
     }
 
     function stopFeedbackPolling() {
@@ -44,11 +36,7 @@ $(document).ready(function () {
         $('#liveFeedbackText').text("Feedback polling stopped.");
     }
 
-    // Stop video capture on page unload
     $(window).on('beforeunload', function () {
-        $.post('/end');  // Stop video capture on page unload
+        $.post('/end');  // End session on page unload
     });
-
-    // Initially hide the video feed
-    $('#video-feed').hide();
 });

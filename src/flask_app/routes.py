@@ -22,20 +22,6 @@ def index():
 def feedback_page():
     return render_template('feedback.html')
 
-@main.route('/video_feed')
-@login_required
-def video_feed():
-    global cap
-    try:
-        if cap is None or not cap.isOpened() or not is_session_active:
-            logging.error("Camera is not initialized or session is not active.")
-            return jsonify({"error": "Camera is not accessible."}), 500
-        return Response(capture_video(cap, is_session_active, use_posenet=True),
-                        mimetype='multipart/x-mixed-replace; boundary=frame')
-    except Exception as e:
-        logging.exception("Error in video feed: %s", str(e))
-        return jsonify({"error": "Video feed failed."}), 500
-
 @main.route('/start', methods=['POST'])
 @login_required
 def start_feedback():
@@ -53,8 +39,22 @@ def start_feedback():
         logging.info("Feedback session started successfully.")
         return jsonify({"message": "Yoga feedback session started."}), 200
     except Exception as e:
-        logging.exception("Error during feedback session: %s", str(e))
+        logging.exception("Error during feedback session: %s", str(e))  # Log exception details
         return jsonify({"error": "Failed to start feedback session."}), 500
+
+@main.route('/video_feed')
+@login_required
+def video_feed():
+    global cap
+    try:
+        if cap is None or not cap.isOpened() or not is_session_active:
+            logging.error("Camera is not initialized or session is not active.")
+            return jsonify({"error": "Camera is not accessible."}), 500
+        return Response(capture_video(cap, is_session_active, use_posenet=True),
+                        mimetype='multipart/x-mixed-replace; boundary=frame')
+    except Exception as e:
+        logging.exception("Error in video feed: %s", str(e))  # Log the exception with traceback
+        return jsonify({"error": "Video feed failed."}), 500
 
 @main.route('/end', methods=['POST'])
 @login_required
