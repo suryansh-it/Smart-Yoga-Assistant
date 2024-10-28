@@ -57,12 +57,18 @@
         
 #         return np.argmax(prediction), np.max(prediction)  # Return the class and confidence score
 
-
+# Code for loading and using Yoga pose classification model
 import numpy as np
 import tensorflow as tf
+import tensorflow_hub as hub
 
 # Path to the directory containing the 'saved_model.pb' file
 model_path = r"D:/Dev/python/Flask/dev_flask/Smart-Yoga-Assistant/models"
+
+# Load the MoveNet model
+model = hub.KerasLayer("https://tfhub.dev/google/movenet/singlepose/lightning/4")
+
+
 
 class YogaPoseClassifier:
     def __init__(self, model_path):

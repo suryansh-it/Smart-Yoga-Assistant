@@ -1,4 +1,5 @@
-# This file is responsible for preprocessing the keypoint data (from PoseNet and Mediapipe) before feeding it into the model for pose classification or correction.
+# This file is responsible for preprocessing the keypoint data (from PoseNet and Mediapipe)
+# before feeding it into the model for pose classification or correction.
 
 import numpy as np
 
