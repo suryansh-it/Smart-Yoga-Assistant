@@ -1,4 +1,4 @@
-# Utility functions for giving pose correction feedback
+
 
 
 # def give_feedback(keypoints):
@@ -36,33 +36,48 @@
 #             return feedback
 #     return "No keypoints detected. Adjust your position."
 
-
+# Utility functions for giving pose correction feedback
 def give_feedback(keypoints):
     """
-    Provide feedback on yoga poses based on extracted keypoints.
+    Provide real-time feedback on yoga poses based on extracted keypoints.
     
     :param keypoints: A dictionary or list of keypoints extracted from PoseNet or Mediapipe.
     :return: A string with feedback for the user.
     """
-    feedback = ""
+    feedback = "Pose feedback: "
     
     if keypoints.any():  # Checking if there are valid keypoints
+        
+        # Ensure body keypoints are available
         if 'body' in keypoints:
             body_keypoints = keypoints['body']
-            feedback = "Keep your back straight."
-
-            # Check if shoulders are aligned
+            
+            # Keep back straight
+            feedback += "Keep your back straight. "
+            
+            # Check shoulder alignment
             if abs(body_keypoints[5][1] - body_keypoints[6][1]) > 0.05:
-                feedback += " Try aligning your shoulders."
+                feedback += "Align your shoulders. "
             else:
-                feedback += " Your shoulders are aligned."
+                feedback += "Shoulders are aligned. "
+            
+            # Check hip alignment
+            if abs(body_keypoints[11][1] - body_keypoints[12][1]) > 0.05:
+                feedback += "Align your hips. "
+            
+            # Example: Additional arm and leg position check
+            if abs(body_keypoints[7][1] - body_keypoints[8][1]) > 0.1:
+                feedback += "Straighten your left arm. "
+            if abs(body_keypoints[15][1] - body_keypoints[16][1]) > 0.1:
+                feedback += "Align your legs evenly. "
         
+        # Use separate conditions for 17-point keypoints
         elif len(keypoints) == 17:
-            feedback = "Ensure proper balance in your pose."
             if abs(keypoints[5][0] - keypoints[6][0]) > 0.1:
-                feedback += " Raise your left shoulder to be in line."
+                feedback += "Raise your left shoulder slightly. "
             else:
-                feedback += " Your shoulders are aligned."
+                feedback += "Your shoulders look balanced. "
+    
     else:
         feedback = "No keypoints detected. Adjust your position."
 
