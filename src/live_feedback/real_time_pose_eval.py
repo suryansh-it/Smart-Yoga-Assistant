@@ -44,7 +44,10 @@ from src.pose_estimation.mediapipe_integration import get_mediapipe_keypoints
 from src.live_feedback.feedback_utils import give_feedback
 
 
-posenet_instance = PoseNet()
+model_path = 'D:/Dev/python/Flask/dev_flask/Smart-Yoga-Assistant/models'
+
+# PoseNet class expects the model_path parameter when creating an instance
+posenet_instance = PoseNet(model_path=model_path)
 
 def evaluate_pose(image, use_posenet=True):
     """

@@ -1,8 +1,8 @@
 import cv2
 from flask import Blueprint, render_template, Response, jsonify, request
 from flask_login import login_required
-# from ..live_feedback.video_capture import capture_video
-from src.live_feedback.video_capture import capture_video  # Absolute path for imports
+from ..live_feedback.video_capture import capture_video
+# from src.live_feedback.video_capture import capture_video  # Absolute path for imports
 import logging
 
 main = Blueprint('main', __name__)
