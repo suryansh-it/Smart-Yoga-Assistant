@@ -1,4 +1,4 @@
-# Code for real-time evaluation and feedback
+
 
 # This script handles real-time evaluation of yoga poses, allowing fallback
 # between PoseNet and Mediapipe for keypoint extraction
@@ -38,13 +38,17 @@
 #         feedback= "No keypoints detected."
 #     return feedback
 
+# Code for real-time evaluation and feedback
+
+import tensorflow as tf
+import numpy as np
 from src.pose_estimation.posenet_integration import PoseNet
 # from src.pose_estimation.posenet_integration import get_posenet_keypoints
 from src.pose_estimation.mediapipe_integration import get_mediapipe_keypoints
 from src.live_feedback.feedback_utils import give_feedback
 
 
-model_path = 'D:/Dev/python/Flask/dev_flask/Smart-Yoga-Assistant/models'
+model_path = r'D:/Dev/python/Flask/dev_flask/Smart-Yoga-Assistant/models'
 
 # PoseNet class expects the model_path parameter when creating an instance
 posenet_instance = PoseNet(model_path=model_path)
@@ -61,7 +65,7 @@ def evaluate_pose(image, use_posenet=True):
     keypoints = posenet_instance.get_posenet_keypoints(image) if use_posenet else get_mediapipe_keypoints(image)
 
     # Check if keypoints are detected
-    if keypoints.any():  # Assuming keypoints is a NumPy array or tensor
+    if isinstance(keypoints, np.ndarray) and keypoints.any():  # Check if keypoints is an array with values
         # Process keypoints and give feedback
         feedback = give_feedback(keypoints)
     else:

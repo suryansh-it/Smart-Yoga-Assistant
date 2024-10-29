@@ -51,16 +51,20 @@ class PoseNet:
         :param image: Input image for pose estimation.
         :return: List of keypoints for the body.
         """
-
-
+        # Resize and normalize the input image
         input_image = cv2.resize(image, (192, 192))
-        input_image = input_image.astype(np.int32) / 255.0
-        input_image = np.expand_dims(input_image, axis=0)
-        input_tensor = tf.convert_to_tensor(input_image)
-        input_tensor = tf.cast(input_tensor, tf.int32)
-        keypoints_output = self.predict_fn(input_tensor)
+        input_image = input_image.astype(np.float32) / 255.0  # Ensure float32 dtype for normalized input
+        input_image = np.expand_dims(input_image, axis=0)  # Add batch dimension
+
+        # Convert to TensorFlow tensor with int32 type as required by the model
+        input_tensor = tf.convert_to_tensor(input_image, dtype=tf.int32)
+
+        # Pass the tensor using the 'input' keyword argument
+        keypoints_output = self.predict_fn(input=input_tensor)
+
+        # Extract and return keypoints from model output
         keypoints = keypoints_output['output_0'].numpy()[0]
         return keypoints
 
-# Instantiate PoseNet
-posenet_model = PoseNet(model_path)
+# # Instantiate PoseNet
+# posenet_instance = PoseNet(model_path)
