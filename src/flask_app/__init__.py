@@ -5,6 +5,9 @@ from .models import db, User  # Ensure models are imported here
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 
+
+from src.flask_app.routes import main  # Use absolute import
+
 # Initialize Flask extensions
 bcrypt = Bcrypt()
 login_manager = LoginManager()

@@ -37,7 +37,7 @@ import tensorflow as tf
 import numpy as np
 
 # Path to the locally saved MoveNet model
-model_path = r"D:/Dev/python/Flask/dev_flask/Smart-Yoga-Assistant/models/movenet"
+model_path = r"D:/Dev/python/Flask/dev_flask/Smart-Yoga-Assistant/models"
 
 class PoseNet:
     def __init__(self, model_path):
@@ -45,7 +45,7 @@ class PoseNet:
         self.model = tf.saved_model.load(model_path)
         self.predict_fn = self.model.signatures['serving_default']
 
-    def get_keypoints(self, image):
+    def get_posenet_keypoints(self, image):
         """
         Extract keypoints using PoseNet for body poses (16 keypoints).
         :param image: Input image for pose estimation.

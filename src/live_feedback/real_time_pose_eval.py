@@ -38,10 +38,13 @@
 #         feedback= "No keypoints detected."
 #     return feedback
 
-
-from src.pose_estimation.posenet_integration import get_posenet_keypoints
+from src.pose_estimation.posenet_integration import PoseNet
+# from src.pose_estimation.posenet_integration import get_posenet_keypoints
 from src.pose_estimation.mediapipe_integration import get_mediapipe_keypoints
 from src.live_feedback.feedback_utils import give_feedback
+
+
+posenet_instance = PoseNet()
 
 def evaluate_pose(image, use_posenet=True):
     """
@@ -52,7 +55,7 @@ def evaluate_pose(image, use_posenet=True):
     :return: Feedback based on the pose evaluation.
     """
     # Get keypoints from PoseNet or Mediapipe
-    keypoints = get_posenet_keypoints(image) if use_posenet else get_mediapipe_keypoints(image)
+    keypoints = posenet_instance.get_posenet_keypoints(image) if use_posenet else get_mediapipe_keypoints(image)
 
     # Check if keypoints are detected
     if keypoints.any():  # Assuming keypoints is a NumPy array or tensor
