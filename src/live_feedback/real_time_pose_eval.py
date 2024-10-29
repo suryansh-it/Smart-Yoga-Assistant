@@ -62,13 +62,17 @@ def evaluate_pose(image, use_posenet=True):
     :return: Feedback based on the pose evaluation.
     """
     # Get keypoints from PoseNet or Mediapipe
-    keypoints = posenet_instance.get_posenet_keypoints(image) if use_posenet else get_mediapipe_keypoints(image)
+    try:
+        keypoints = posenet_instance.get_posenet_keypoints(image) if use_posenet else get_mediapipe_keypoints(image)
 
-    # Check if keypoints are detected
-    if isinstance(keypoints, np.ndarray) and keypoints.any():  # Check if keypoints is an array with values
-        # Process keypoints and give feedback
-        feedback = give_feedback(keypoints)
-    else:
-        feedback = "No keypoints detected."
+        # Check if keypoints are detected and not empty
+        if isinstance(keypoints, np.ndarray) and keypoints.any():
+            feedback = give_feedback(keypoints)
+        else:
+            feedback = "No keypoints detected."
+
+    except Exception as e:
+        print(f"Error in evaluating pose: {e}")
+        feedback = "Error in pose evaluation."
 
     return feedback
