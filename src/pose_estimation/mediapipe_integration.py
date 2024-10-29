@@ -14,44 +14,28 @@ face_mesh = mp_face_mesh.FaceMesh()
 
 def get_mediapipe_keypoints(image):
     """
-    Use Mediapipe to get 33 body keypoints (including facial, hands, feet).
+    Use Mediapipe to get body, hands, and face keypoints.
     :param image: Input image for pose estimation.
     :return: A dictionary with body, hands, and face keypoints.
     """
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-    # Pose landmarks
     results_pose = pose.process(image_rgb)
-    
-    # Hands landmarks
     results_hands = hands.process(image_rgb)
-    
-    # Face mesh landmarks
     results_face = face_mesh.process(image_rgb)
 
-    keypoints = {
-        'body': [],
-        'hands': [],
-        'face': []
-    }
+    keypoints = {'body': [], 'hands': [], 'face': []}
 
-    # Extract body pose keypoints
     if results_pose.pose_landmarks:
         keypoints['body'] = [
-            [landmark.x, landmark.y, landmark.z] for landmark in results_pose.pose_landmarks.landmark
+            [lm.x, lm.y, lm.z] for lm in results_pose.pose_landmarks.landmark
         ]
-
-    # Extract hand keypoints
     if results_hands.multi_hand_landmarks:
-        for hand_landmarks in results_hands.multi_hand_landmarks:
-            keypoints['hands'].append([
-                [landmark.x, landmark.y, landmark.z] for landmark in hand_landmarks.landmark
-            ])
-
-    # Extract face mesh keypoints
+        keypoints['hands'] = [
+            [[lm.x, lm.y, lm.z] for lm in hand_landmarks.landmark]
+            for hand_landmarks in results_hands.multi_hand_landmarks
+        ]
     if results_face.multi_face_landmarks:
         keypoints['face'] = [
-            [landmark.x, landmark.y, landmark.z] for landmark in results_face.multi_face_landmarks[0].landmark
+            [lm.x, lm.y, lm.z] for lm in results_face.multi_face_landmarks[0].landmark
         ]
-
     return keypoints
