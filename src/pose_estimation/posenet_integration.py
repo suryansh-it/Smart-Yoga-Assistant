@@ -30,16 +30,17 @@
 #     keypoints = keypoints_output['output_0'].numpy()[0]
 #     return keypoints
 
+# posenet integration
 
 import cv2
 import tensorflow as tf
 import numpy as np
 import tensorflow_hub as hub
 
-# Load the MoveNet model from TensorFlow Hub with the correct signature and output key
-model = hub.KerasLayer("https://tfhub.dev/google/movenet/singlepose/lightning/4", 
-                       signature="serving_default", 
-                       output_key="output_0")
+# # Load the MoveNet model from TensorFlow Hub with the correct signature and output key
+# model = hub.KerasLayer("https://tfhub.dev/google/movenet/singlepose/lightning/4", 
+#                        signature="serving_default", 
+#                        output_key="output_0")
 
 def get_posenet_keypoints(image):
     """
