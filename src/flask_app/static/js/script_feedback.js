@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $('#start-button').click(function () {
         $.post('/start', function (data) {
-            $('#feedbackArea').append('<div class="alert alert-info">Session started: ' + data.message + '</div>');
+            $('#feedbackArea').append('<div class="alert alert-info">Session started </div>');
             $('#video').attr('src', '/video_feed'); // Set the img src to video feed
             startFeedbackPolling(); // Start feedback polling
         }).fail(function (jqXHR) {
@@ -23,7 +23,7 @@ $(document).ready(function () {
 
     function startFeedbackPolling() {
         feedbackInterval = setInterval(function () {
-            $.get('/feedback', function (data) {
+            $.get('/get_feedback', function (data) {
                 $('#liveFeedbackText').text(data.feedback);
             }).fail(function () {
                 $('#liveFeedbackText').text("Error retrieving feedback.");

@@ -1,7 +1,8 @@
 import cv2
-from flask import Blueprint, render_template, Response, jsonify, request
+from flask import Blueprint, render_template, Response, jsonify, request,url_for
 from flask_login import login_required
 from ..live_feedback.video_capture import capture_video
+from ..live_feedback.real_time_pose_eval import evaluate_pose
 # from src.live_feedback.video_capture import capture_video  # Absolute path for imports
 import logging
 
@@ -38,7 +39,20 @@ def start_feedback():
 
         is_session_active = True  # Set the session active after successful camera access
         logging.info("Feedback session started successfully.")
-        return jsonify({"message": "Yoga feedback session started."}), 200
+        
+        #     # Retrieve initial feedback by calling get_feedback()
+        # feedback_response = get_feedback()  # Call the function directly
+        # if feedback_response.status_code != 200:
+        #     # If get_feedback encountered an issue, stop the session and return the error
+        #     end_feedback()
+        #     return feedback_response  # Return the error response from get_feedback
+        
+        # Return initial feedback along with redirection URL
+        return jsonify({
+            "redirect_url": url_for('main.feedback_page'),
+            
+        }), 200
+
     except Exception as e:
         logging.exception("Error during feedback session: %s", str(e))  # Log exception details
         return jsonify({"error": "Failed to start feedback session."}), 500
@@ -69,8 +83,21 @@ def end_feedback():
         logging.info("Camera released successfully.")
     return jsonify({"message": "Yoga feedback session ended."}), 200
 
-@main.route('/feedback', methods=['GET'])
+@main.route('/get_feedback', methods=['GET'])
 @login_required
+
+#captures a frame from the video feed within the get_feedback route and pass it to evaluate_pose
+
 def get_feedback():
-    feedback = "Posture is correct!"  # Placeholder feedback
+    global cap
+    if cap is None or not cap.isOpened() or not is_session_active:
+        return jsonify({"error": "Camera is not accessible or session is inactive."}), 500
+
+    # Read a frame from the camera
+    ret, frame = cap.read()
+    if not ret:
+        return jsonify({"error": "Failed to capture frame from camera."}), 500
+
+    # Call evaluate_pose to get feedback based on the captured frame
+    feedback = evaluate_pose(frame, use_posenet=True)
     return jsonify({"feedback": feedback})
