@@ -24,6 +24,7 @@ $(document).ready(function () {
     function startFeedbackPolling() {
         feedbackInterval = setInterval(function () {
             $.get('/get_feedback', function (data) {
+                console.log("Feedback received:", data);  // Log feedback data for debugging
                 $('#liveFeedbackText').text(data.feedback);
             }).fail(function () {
                 $('#liveFeedbackText').text("Error retrieving feedback.");

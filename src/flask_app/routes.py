@@ -88,16 +88,24 @@ def end_feedback():
 
 #captures a frame from the video feed within the get_feedback route and pass it to evaluate_pose
 
+
 def get_feedback():
     global cap
     if cap is None or not cap.isOpened() or not is_session_active:
+        logging.error("Camera is not accessible or session is inactive.")
         return jsonify({"error": "Camera is not accessible or session is inactive."}), 500
 
-    # Read a frame from the camera
+    # Attempt to capture a frame
     ret, frame = cap.read()
     if not ret:
+        logging.error("Failed to capture frame from camera.")
         return jsonify({"error": "Failed to capture frame from camera."}), 500
 
-    # Call evaluate_pose to get feedback based on the captured frame
-    feedback = evaluate_pose(frame, use_posenet=True)
-    return jsonify({"feedback": feedback})
+    # Evaluate pose and capture feedback
+    try:
+        feedback = evaluate_pose(frame, use_posenet=True)
+        logging.info(f"Pose feedback: {feedback}")  # Log the feedback for debugging
+        return jsonify({"feedback": feedback})
+    except Exception as e:
+        logging.exception("Error during pose evaluation: %s", str(e))
+        return jsonify({"error": "Failed to evaluate pose."}), 500
