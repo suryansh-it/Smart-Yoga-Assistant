@@ -18,7 +18,7 @@ def capture_video(cap, is_session_active, use_posenet=True):
             break
 
         # Resize the frame for display
-        resized_frame = cv2.resize(frame, (640, 480))
+        resized_frame = cv2.resize(frame, (840, 680))
 
         # Perform pose evaluation and get feedback
         feedback = evaluate_pose(resized_frame, use_posenet=use_posenet)

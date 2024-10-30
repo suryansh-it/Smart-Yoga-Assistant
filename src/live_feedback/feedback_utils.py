@@ -36,48 +36,83 @@
 #             return feedback
 #     return "No keypoints detected. Adjust your position."
 
+
+
 # Utility functions for giving pose correction feedback
 def give_feedback(keypoints):
     """
     Provide real-time feedback on yoga poses based on extracted keypoints.
     
-    :param keypoints: A dictionary or list of keypoints extracted from PoseNet or Mediapipe.
+    :param keypoints: A 3D array of keypoints extracted from PoseNet or Mediapipe.
     :return: A string with feedback for the user.
     """
     feedback = "Pose feedback: "
+    confidence_threshold = 0.05  # Minimum confidence level to consider a keypoint valid
     
-    if keypoints.any():  # Checking if there are valid keypoints
-        
-        # Ensure body keypoints are available
-        if 'body' in keypoints:
-            body_keypoints = keypoints['body']
-            
-            # Keep back straight
-            feedback += "Keep your back straight. "
-            
-            # Check shoulder alignment
-            if abs(body_keypoints[5][1] - body_keypoints[6][1]) > 0.05:
+    # Check if keypoints are valid and contain 17 points
+    if keypoints is not None and len(keypoints[0]) == 17:
+        print("Processing Keypoints in give_feedback:", keypoints)  # Debugging line
+
+        # Shoulder alignment (indexes 5 and 6)
+        left_shoulder_y = keypoints[0][5][1]
+        right_shoulder_y = keypoints[0][6][1]
+        left_shoulder_conf = keypoints[0][5][2]
+        right_shoulder_conf = keypoints[0][6][2]
+
+        if left_shoulder_conf > confidence_threshold and right_shoulder_conf > confidence_threshold:
+            if abs(left_shoulder_y - right_shoulder_y) > 0.05:
                 feedback += "Align your shoulders. "
             else:
                 feedback += "Shoulders are aligned. "
-            
-            # Check hip alignment
-            if abs(body_keypoints[11][1] - body_keypoints[12][1]) > 0.05:
+
+        # Hip alignment (indexes 11 and 12)
+        left_hip_y = keypoints[0][11][1]
+        right_hip_y = keypoints[0][12][1]
+        left_hip_conf = keypoints[0][11][2]
+        right_hip_conf = keypoints[0][12][2]
+
+        if left_hip_conf > confidence_threshold and right_hip_conf > confidence_threshold:
+            if abs(left_hip_y - right_hip_y) > 0.05:
                 feedback += "Align your hips. "
-            
-            # Example: Additional arm and leg position check
-            if abs(body_keypoints[7][1] - body_keypoints[8][1]) > 0.1:
+
+        # Arm alignment (left arm indexes 7 and 9, right arm indexes 8 and 10)
+        left_elbow_y = keypoints[0][7][1]
+        left_wrist_y = keypoints[0][9][1]
+        left_elbow_conf = keypoints[0][7][2]
+        left_wrist_conf = keypoints[0][9][2]
+
+        if left_elbow_conf > confidence_threshold and left_wrist_conf > confidence_threshold:
+            if abs(left_elbow_y - left_wrist_y) > 0.1:
                 feedback += "Straighten your left arm. "
-            if abs(body_keypoints[15][1] - body_keypoints[16][1]) > 0.1:
-                feedback += "Align your legs evenly. "
-        
-        # Use separate conditions for 17-point keypoints
-        elif len(keypoints) == 17:
-            if abs(keypoints[5][0] - keypoints[6][0]) > 0.1:
-                feedback += "Raise your left shoulder slightly. "
-            else:
-                feedback += "Your shoulders look balanced. "
-    
+
+        right_elbow_y = keypoints[0][8][1]
+        right_wrist_y = keypoints[0][10][1]
+        right_elbow_conf = keypoints[0][8][2]
+        right_wrist_conf = keypoints[0][10][2]
+
+        if right_elbow_conf > confidence_threshold and right_wrist_conf > confidence_threshold:
+            if abs(right_elbow_y - right_wrist_y) > 0.1:
+                feedback += "Straighten your right arm. "
+
+        # Leg alignment (left leg indexes 15 and 16, right leg indexes 13 and 14)
+        left_knee_y = keypoints[0][15][1]
+        left_ankle_y = keypoints[0][16][1]
+        left_knee_conf = keypoints[0][15][2]
+        left_ankle_conf = keypoints[0][16][2]
+
+        if left_knee_conf > confidence_threshold and left_ankle_conf > confidence_threshold:
+            if abs(left_knee_y - left_ankle_y) > 0.1:
+                feedback += "Align your left leg evenly. "
+
+        right_knee_y = keypoints[0][13][1]
+        right_ankle_y = keypoints[0][14][1]
+        right_knee_conf = keypoints[0][13][2]
+        right_ankle_conf = keypoints[0][14][2]
+
+        if right_knee_conf > confidence_threshold and right_ankle_conf > confidence_threshold:
+            if abs(right_knee_y - right_ankle_y) > 0.1:
+                feedback += "Align your right leg evenly. "
+
     else:
         feedback = "No keypoints detected. Adjust your position."
 

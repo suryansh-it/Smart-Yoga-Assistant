@@ -65,6 +65,9 @@ def evaluate_pose(image, use_posenet=True):
     try:
         keypoints = posenet_instance.get_posenet_keypoints(image) if use_posenet else get_mediapipe_keypoints(image)
 
+                # Log extracted keypoints for debugging
+        print("Extracted Keypoints:", keypoints)
+
         # Check if keypoints are detected and not empty
         if isinstance(keypoints, np.ndarray) and keypoints.any():
             feedback = give_feedback(keypoints)

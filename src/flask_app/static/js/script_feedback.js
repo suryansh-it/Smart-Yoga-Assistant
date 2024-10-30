@@ -25,7 +25,7 @@ $(document).ready(function () {
         feedbackInterval = setInterval(function () {
             $.get('/get_feedback', function (data) {
                 console.log("Feedback received:", data);  // Log feedback data for debugging
-                $('#liveFeedbackText').text(data.feedback);
+                $('#liveFeedbackText').text(data.feedback || "Waiting for feedback...");
             }).fail(function () {
                 $('#liveFeedbackText').text("Error retrieving feedback.");
             });
