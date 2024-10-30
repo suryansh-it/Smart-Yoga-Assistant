@@ -48,7 +48,8 @@ def give_feedback(keypoints):
     """
     feedback = "Pose feedback: "
     confidence_threshold = 0.05  # Minimum confidence level to consider a keypoint valid
-    
+    feedback_parts = []  # To accumulate individual feedback messages
+
     # Check if keypoints are valid and contain 17 points
     if keypoints is not None and len(keypoints[0]) == 17:
         print("Processing Keypoints in give_feedback:", keypoints)  # Debugging line
@@ -61,9 +62,9 @@ def give_feedback(keypoints):
 
         if left_shoulder_conf > confidence_threshold and right_shoulder_conf > confidence_threshold:
             if abs(left_shoulder_y - right_shoulder_y) > 0.05:
-                feedback += "Align your shoulders. "
+                feedback_parts.append("Align your shoulders.")
             else:
-                feedback += "Shoulders are aligned. "
+                feedback_parts.append("Shoulders are aligned.")
 
         # Hip alignment (indexes 11 and 12)
         left_hip_y = keypoints[0][11][1]
@@ -73,7 +74,7 @@ def give_feedback(keypoints):
 
         if left_hip_conf > confidence_threshold and right_hip_conf > confidence_threshold:
             if abs(left_hip_y - right_hip_y) > 0.05:
-                feedback += "Align your hips. "
+                feedback_parts.append("Align your hips.")
 
         # Arm alignment (left arm indexes 7 and 9, right arm indexes 8 and 10)
         left_elbow_y = keypoints[0][7][1]
@@ -83,7 +84,7 @@ def give_feedback(keypoints):
 
         if left_elbow_conf > confidence_threshold and left_wrist_conf > confidence_threshold:
             if abs(left_elbow_y - left_wrist_y) > 0.1:
-                feedback += "Straighten your left arm. "
+                feedback_parts.append("Straighten your left arm.")
 
         right_elbow_y = keypoints[0][8][1]
         right_wrist_y = keypoints[0][10][1]
@@ -92,7 +93,7 @@ def give_feedback(keypoints):
 
         if right_elbow_conf > confidence_threshold and right_wrist_conf > confidence_threshold:
             if abs(right_elbow_y - right_wrist_y) > 0.1:
-                feedback += "Straighten your right arm. "
+                feedback_parts.append("Straighten your right arm.")
 
         # Leg alignment (left leg indexes 15 and 16, right leg indexes 13 and 14)
         left_knee_y = keypoints[0][15][1]
@@ -102,7 +103,7 @@ def give_feedback(keypoints):
 
         if left_knee_conf > confidence_threshold and left_ankle_conf > confidence_threshold:
             if abs(left_knee_y - left_ankle_y) > 0.1:
-                feedback += "Align your left leg evenly. "
+                feedback_parts.append("Align your left leg evenly.")
 
         right_knee_y = keypoints[0][13][1]
         right_ankle_y = keypoints[0][14][1]
@@ -111,9 +112,13 @@ def give_feedback(keypoints):
 
         if right_knee_conf > confidence_threshold and right_ankle_conf > confidence_threshold:
             if abs(right_knee_y - right_ankle_y) > 0.1:
-                feedback += "Align your right leg evenly. "
+                feedback_parts.append("Align your right leg evenly.")
 
     else:
-        feedback = "No keypoints detected. Adjust your position."
+        feedback_parts.append("No keypoints detected. Adjust your position.")
 
+    # Combine feedback parts into a single message
+    feedback += " ".join(feedback_parts) if feedback_parts else "All good!"
+    print("Final Feedback:", feedback)  # Debugging line
     return feedback
+
