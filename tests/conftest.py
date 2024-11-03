@@ -7,7 +7,7 @@ from src.flask_app.__init__ import create_app
 
 @pytest.fixture()
 def app():
-    app= create_app("sqlite://") #temp database fot test ,destroyed after test is completed
+    app= create_app() #temp database fot test ,destroyed after test is completed
     with app.app_context():
         db.create_all()  #put models in databse
 
