@@ -17,7 +17,8 @@ def app():
     #pytest will run the code after yield , once the test is finished running : nothing in this case
 
 @pytest.fixture()
-def client(app) #can pass fixtures as args/parameter to other fixtures or tests
+def client(app):
+#can pass fixtures as args/parameter to other fixtures or test
 #we are just defining fixture as parameter, pitest will match the para name and pass the fixture
 
     return app.test_client() #allow us to simulate requests
