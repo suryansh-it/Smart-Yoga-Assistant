@@ -8,6 +8,7 @@ from src.flask_app.__init__ import create_app
 @pytest.fixture()
 def app():
     app= create_app() #temp database fot test ,destroyed after test is completed
+    FLASK_SQLALCHEMY_DATABASE_URI = 'sqlite://'
     with app.app_context():
         db.create_all()  #put models in databse
 
