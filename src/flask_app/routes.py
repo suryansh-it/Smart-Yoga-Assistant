@@ -89,13 +89,37 @@ def end_feedback():
 #captures a frame from the video feed within the get_feedback route and pass it to evaluate_pose
 
 
+# def get_feedback():
+#     global cap
+#     if cap is None or not cap.isOpened() or not is_session_active:
+#         logging.error("Camera is not accessible or session is inactive.")
+#         return jsonify({"error": "Camera is not accessible or session is inactive."}), 500
+
+#     # Attempt to capture a frame
+#     ret, frame = cap.read()
+#     if not ret:
+#         logging.error("Failed to capture frame from camera.")
+#         return jsonify({"error": "Failed to capture frame from camera."}), 500
+
+#     # Evaluate pose and capture feedback
+#     try:
+#         feedback = evaluate_pose(frame, use_posenet=True)
+#         logging.info(f"Pose feedback: {feedback}")  # Log the feedback for debugging
+#         return jsonify({"feedback": feedback})
+#     except Exception as e:
+#         logging.exception("Error during pose evaluation: %s", str(e))
+#         return jsonify({"error": "Failed to evaluate pose."}), 500
+
+
+@main.route('/get_feedback', methods=['GET'])
+@login_required
 def get_feedback():
     global cap
     if cap is None or not cap.isOpened() or not is_session_active:
         logging.error("Camera is not accessible or session is inactive.")
         return jsonify({"error": "Camera is not accessible or session is inactive."}), 500
 
-    # Attempt to capture a frame
+    # Capture a frame from the video feed
     ret, frame = cap.read()
     if not ret:
         logging.error("Failed to capture frame from camera.")
@@ -103,8 +127,16 @@ def get_feedback():
 
     # Evaluate pose and capture feedback
     try:
-        feedback = evaluate_pose(frame, use_posenet=True)
-        logging.info(f"Pose feedback: {feedback}")  # Log the feedback for debugging
+        feedback, keypoints = evaluate_pose(frame, use_posenet=True)
+        logging.info(f"Pose feedback: {feedback}")  # Log the feedback
+
+        # Overlay keypoints if needed (optional; could render as visual feedback)
+        for point in keypoints:
+            if point[2] > 0:  # Confidence check
+                x = int(point[0] * frame.shape[1])
+                y = int(point[1] * frame.shape[0])
+                cv2.circle(frame, (x, y), 5, (0, 255, 0), -1)
+
         return jsonify({"feedback": feedback})
     except Exception as e:
         logging.exception("Error during pose evaluation: %s", str(e))
