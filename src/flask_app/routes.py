@@ -83,8 +83,8 @@ def end_feedback():
         logging.info("Camera released successfully.")
     return jsonify({"message": "Yoga feedback session ended."}), 200
 
-@main.route('/get_feedback', methods=['GET'])
-@login_required
+# @main.route('/get_feedback', methods=['GET'])
+# @login_required
 
 #captures a frame from the video feed within the get_feedback route and pass it to evaluate_pose
 
