@@ -65,13 +65,17 @@ def draw_grid(frame):
 
 def draw_keypoints(frame, keypoints):
     for keypoint in keypoints:
-        # Check if the keypoint is valid (x, y, confidence)
-        if keypoint[2] > 0:  # Confidence score (assuming it's the 3rd value)
-            x = int(keypoint[0] * frame.shape[1])  # Scale x to frame width
-            y = int(keypoint[1] * frame.shape[0])  # Scale y to frame height
-            cv2.circle(frame, (x, y), 5, (0, 255, 0), -1)  # Draw a circle for the keypoint
+        if isinstance(keypoint, np.ndarray) and keypoint.shape[0] >= 3:
+            # Use .item() to get the scalar value if keypoint[2] is an array
+            confidence = keypoint[2].item() if isinstance(keypoint[2], np.ndarray) else keypoint[2]
+
+            if confidence > 0:  # Confidence score
+                x = int(keypoint[0] * frame.shape[1])  # Scale x to frame width
+                y = int(keypoint[1] * frame.shape[0])  # Scale y to frame height
+                cv2.circle(frame, (x, y), 5, (0, 255, 0), -1)  # Draw a circle for the keypoint
 
     return frame
+
 
 def capture_video(cap, is_session_active, use_posenet=True):
     if not is_session_active:

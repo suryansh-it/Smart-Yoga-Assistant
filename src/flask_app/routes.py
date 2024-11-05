@@ -164,7 +164,7 @@ def get_feedback():
         # Overlay keypoints on the frame if detected
         if keypoints.size > 0:
             for point in keypoints:
-                if point[2] > 0:  # Confidence threshold
+                if len(point) == 3 and point[2] > 0:  # Check if confidence exists and is above threshold
                     x = int(point[0] * frame.shape[1])
                     y = int(point[1] * frame.shape[0])
                     cv2.circle(frame, (x, y), 5, (0, 255, 0), -1)
